@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="taskpane.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+</head>
+<body>
+    <div class="loader" id="loader"></div>
+    <main id="section-main" class="closir_main">
+        <div id="meeting_saved" style="display: none;">
+            <p><label class="section_title text-style">This meeting is already saved to Closir</label></p>
+        </div>
+        <label class="text-style" id="item-subject">Please press the save button after filling your meeting info</label>
+        <label class="text-style" id="item-error">Please fill the meeting details before saving the meeting on Closir</label>
+        <div id="access_gained">
+            <div class="meeting_type_div">
+                <label class="section_title text-style" for="meeting_types">Meeting type:</label>
+                <select name="meeting_types" id="meeting_types">
+                    <option value=""></option>
+                    <option value="CONFERENCE">CONFERENCE</option>
+                    <option value="ROADSHOW">ROADSHOW</option>
+                    <option value="CALL">CALL</option>
+                    <option value="EMAIL">EMAIL</option>
+                    <option value="FIELD TRIP">FIELD TRIP</option>
+                    <option value="CAPITAL MARKET DAY">CAPITAL MARKET DAY</option>
+                    <option value="IN-HOUSE">IN-HOUSE</option>
+                    <option value="OTHER">OTHER</option>
+                    <option value="REVERSE ROADSHOW">REVERSE ROADSHOW</option>
+                    <option value="ANALYST DAY">ANALYST DAY</option>
+                </select>
+            </div>
+            <hr>
+            <div class="host_type">
+                <p class="section_title">Host:</p>
+                <div class="radio_group">
+                    <input type="radio" id="direct" name="host_type" value="direct">
+                    <label for="direct">Organised directly</label><br>
+                    <input type="radio" id="host" name="host_type" value="host">
+                    <label for="host">Broker/Host</label><br>
+                    <input type="text" placeholder="Broker/Host name" id="host_name" style="display: none;"/>
+                </div>
+            </div>
+            <hr>
+            <div id="topics" class="topics">
+                <p class="section_title">Topics:</p>
+            </div>
+            <hr>
+            <div role="button" id="approve_adding_meeting" class="closir_button">
+                <span class="closir_button_label" id="approve_adding_meeting_text">Save on Closir</span>
+            </div>
+            <p><label class="text-style" id="meeting_saved_message">Meeting is saved successfully</label></p>
+            <p><label class="text-style" id="meeting_failed_message">Failed to save the meeting. please try again.</label></p>
+        </div>
+    </main>
+</body>
+</html>

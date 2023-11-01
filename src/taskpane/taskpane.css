@@ -1,0 +1,199 @@
+ html,
+ body {
+     width: 100%;
+     height: 100%;
+     margin: 0;
+     padding: 0;
+ }
+
+ hr {
+    height: 1px;
+    background-color: #f3f3f3;
+    border: none;
+}
+
+
+#item-subject{
+    margin-bottom: 10px;
+}
+
+.section_title{
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    margin-bottom: 10px !important;
+}
+
+ .closir_main {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    -webkit-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-flex: 1 0 0;
+    flex: 1 0 0;
+    padding: 10px 20px;
+ }
+ 
+ .closir_main > h2 {
+     width: 100%;
+     text-align: center;
+ }
+ 
+ .closir_button {
+    margin-top: 10px;
+    background-color: #bb252e;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+}
+
+ .closir_button:hover {
+    background-color: #881d24;
+}
+ 
+ .closir_button_label {
+  color: #ffffff;
+  font-family: "Segoe UI", "Segoe UI Web (West European)", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+  font-weight: 300;
+  font-size: 14px;
+}
+
+.closir_button:hover .closir_button_label,
+.closir_button:focus .closir_button_label{
+    color: #ffffff;
+    cursor: pointer;
+}
+#access_gained{
+    width: 100%;
+}
+b {
+    font-weight: bold;
+}
+
+#meeting_types{
+    margin-top: 5px;
+    font-family: "Segoe UI", "Segoe UI Web (West European)", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    color: #424242;
+}
+.meeting_type_div{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 20px;
+}
+.text-style{
+    font-family: "Segoe UI", "Segoe UI Web (West European)", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    color: #424242;
+}
+
+#meeting_saved{
+    display: none;
+}
+#meeting_saved_message {
+    display: none;
+}
+#meeting_failed_message {
+    display: none;
+}
+
+.host_type{
+    display: flex;
+    flex-direction: column;
+    margin: 0 0 20px 0;
+}
+.host_type p{
+    font-family: "Segoe UI", "Segoe UI Web (West European)", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    color: #424242;
+    margin: 0;
+}
+.host_type label{
+    font-family: "Segoe UI", "Segoe UI Web (West European)", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    color: #424242;
+}
+.host_type input{
+    font-family: "Segoe UI", "Segoe UI Web (West European)", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    color: #424242;
+}
+#host_name{
+    width: 100%;
+}
+.radio_group input {
+    margin: 5px 0 0 0;
+}
+
+.topics{
+    margin: 10px 0;
+}
+.topics p {
+    font-family: "Segoe UI", "Segoe UI Web (West European)", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    color: #424242;
+    margin: 0;
+}
+.counterControl{
+    font-family: "Segoe UI", "Segoe UI Web (West European)", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+    font-weight: 300;
+    font-size: 12px;
+    cursor: pointer;
+}
+.topics input {
+    width: 30px;
+}
+p.tagName {
+    cursor: pointer;
+    text-align: center;
+    margin: 0 10px;
+}
+.tagContainer{
+    display: flex;
+    align-items: center;
+    margin-bottom: 3px;
+    background: #e6e6e6;
+    border-radius: 50px;
+    width: fit-content;
+    padding: 4px 8px;
+}
+
+#item-error{
+    display: none;
+    color: #bb252e;
+}
+
+.loader {
+    border: 12px solid #bb252e2e;
+    border-radius: 50%;
+    border-top: 12px solid #bb252e;
+    width: 80px;
+    height: 80px;
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+    position: absolute;
+    left: 35%;
+    top: 40%;
+    display: none;
+}
+@-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+  }
+  
+@keyframes spin {
+0% { transform: rotate(0deg); }
+100% { transform: rotate(360deg); }
+}

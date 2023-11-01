@@ -1,0 +1,5 @@
+module.exports = {
+    AWS_ACCESS_KEY_ID: 'AKIAQGMEMMT5CUVULS5P',
+    AWS_SECRET_ACCESS_KEY: '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',
+    AWS_BUCKET: 'closir-ms1'
+}

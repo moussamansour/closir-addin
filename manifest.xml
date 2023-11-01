@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OfficeApp xmlns="http://schemas.microsoft.com/office/appforoffice/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0" xmlns:mailappor="http://schemas.microsoft.com/office/mailappversionoverrides/1.0" xsi:type="MailApp">
+  <Id>07933a33-a005-4398-b443-983e48bc7bdf</Id>
+  <Version>1.2.0.2</Version>
+  <ProviderName>Closir</ProviderName>
+  <DefaultLocale>en-US</DefaultLocale>
+  <DisplayName DefaultValue="Closir"/>
+  <Description DefaultValue="Allows user to save their meetings to Closir CRM"/>
+  <IconUrl DefaultValue="https://closir-ms1.s3.amazonaws.com/682bf661f65fe5a1dca6faf944018be9aa9701fc29949a0a5e92cedee6d571c8b351b79f66ed9e13454aab42ff5cd535324d71cc44cc9525e407417a04585b8f.png"/>
+  <HighResolutionIconUrl DefaultValue="https://closir-ms1.s3.amazonaws.com/682bf661f65fe5a1dca6faf944018be9aa9701fc29949a0a5e92cedee6d571c8b351b79f66ed9e13454aab42ff5cd535324d71cc44cc9525e407417a04585b8f.png"/>
+  <SupportUrl DefaultValue="https://www.closir.com/help"/>
+  <AppDomains>
+    <AppDomain>https://www.closir.com</AppDomain>
+  </AppDomains>
+  <Hosts>
+    <Host Name="Mailbox"/>
+  </Hosts>
+  <Requirements>
+    <Sets>
+      <Set Name="Mailbox" MinVersion="1.1"/>
+    </Sets>
+  </Requirements>
+  <FormSettings>
+    <Form xsi:type="ItemRead">
+      <DesktopSettings>
+        <SourceLocation DefaultValue="https://localhost:3000/taskpane.html"/>
+        <RequestedHeight>250</RequestedHeight>
+      </DesktopSettings>
+    </Form>
+  </FormSettings>
+  <Permissions>ReadWriteItem</Permissions>
+  <Rule xsi:type="RuleCollection" Mode="Or">
+    <Rule xsi:type="ItemIs" ItemType="Message" FormType="Read"/>
+  </Rule>
+  <DisableEntityHighlighting>false</DisableEntityHighlighting>
+  <VersionOverrides xmlns="http://schemas.microsoft.com/office/mailappversionoverrides" xsi:type="VersionOverridesV1_0">
+    <Requirements>
+      <bt:Sets DefaultMinVersion="1.3">
+        <bt:Set Name="Mailbox"/>
+      </bt:Sets>
+    </Requirements>
+    <Hosts>
+      <Host xsi:type="MailHost">
+        <DesktopFormFactor>
+          <FunctionFile resid="Commands.Url"/>
+          <ExtensionPoint xsi:type="AppointmentAttendeeCommandSurface">
+            <OfficeTab id="TabDefault3">
+                <Group id="msgReadGroup3">
+                  <Label resid="GroupLabel"/>
+                  <Control xsi:type="Button" id="showAddInButton3">
+                    <Label resid="TaskpaneButton.Label"/>
+                    <Supertip>
+                      <Title resid="TaskpaneButton.Label"/>
+                      <Description resid="TaskpaneButton.Tooltip"/>
+                    </Supertip>
+                    <Icon>
+                      <bt:Image size="16" resid="Icon.16x16"/>
+                      <bt:Image size="32" resid="Icon.32x32"/>
+                      <bt:Image size="80" resid="Icon.80x80"/>
+                    </Icon>
+                    <Action xsi:type="ShowTaskpane">
+                      <SourceLocation resid="Taskpane.Url"/>
+                    </Action>
+                  </Control>
+                </Group>
+                <Group id="settingsGroup3">
+                  <Label resid="SettingsLabel"/>
+                  <Control xsi:type="Button" id="settingsButton3">
+                    <Label resid="settingsButton.Label"/>
+                    <Supertip>
+                      <Title resid="settingsButton.Label"/>
+                      <Description resid="settingsButton.Tooltip"/>
+                    </Supertip>
+                    <Icon>
+                      <bt:Image size="16" resid="IconSettings.16x16"/>
+                      <bt:Image size="32" resid="IconSettings.32x32"/>
+                      <bt:Image size="80" resid="IconSettings.80x80"/>
+                    </Icon>
+                    <Action xsi:type="ShowTaskpane">
+                      <SourceLocation resid="settingsButton.Url"/>
+                    </Action>
+                  </Control>
+                </Group>
+            </OfficeTab>
+          </ExtensionPoint>
+          <ExtensionPoint xsi:type="AppointmentOrganizerCommandSurface">
+            <OfficeTab id="TabDefault2">
+                <Group id="msgReadGroup2">
+                  <Label resid="GroupLabel"/>
+                  <Control xsi:type="Button" id="showAddInButton2">
+                    <Label resid="TaskpaneButton.Label"/>
+                    <Supertip>
+                      <Title resid="TaskpaneButton.Label"/>
+                      <Description resid="TaskpaneButton.Tooltip"/>
+                    </Supertip>
+                    <Icon>
+                      <bt:Image size="16" resid="Icon.16x16"/>
+                      <bt:Image size="32" resid="Icon.32x32"/>
+                      <bt:Image size="80" resid="Icon.80x80"/>
+                    </Icon>
+                    <Action xsi:type="ShowTaskpane">
+                      <SourceLocation resid="Taskpane.Url"/>
+                    </Action>
+                  </Control>
+                </Group>
+                <Group id="settingsGroup2">
+                  <Label resid="SettingsLabel"/>
+                  <Control xsi:type="Button" id="settingsButton2">
+                    <Label resid="settingsButton.Label"/>
+                    <Supertip>
+                      <Title resid="settingsButton.Label"/>
+                      <Description resid="settingsButton.Tooltip"/>
+                    </Supertip>
+                    <Icon>
+                      <bt:Image size="16" resid="IconSettings.16x16"/>
+                      <bt:Image size="32" resid="IconSettings.32x32"/>
+                      <bt:Image size="80" resid="IconSettings.80x80"/>
+                    </Icon>
+                    <Action xsi:type="ShowTaskpane">
+                      <SourceLocation resid="settingsButton.Url"/>
+                    </Action>
+                  </Control>
+                </Group>
+            </OfficeTab>
+          </ExtensionPoint>
+          <ExtensionPoint xsi:type="MessageComposeCommandSurface">
+            <OfficeTab id="TabDefault">
+                <Group id="msgReadGroup">
+                  <Label resid="GroupLabel"/>
+                  <Control xsi:type="Button" id="showAddInButton">
+                    <Label resid="TaskpaneButton.Label"/>
+                    <Supertip>
+                      <Title resid="TaskpaneButton.Label"/>
+                      <Description resid="TaskpaneButton.Tooltip"/>
+                    </Supertip>
+                    <Icon>
+                      <bt:Image size="16" resid="Icon.16x16"/>
+                      <bt:Image size="32" resid="Icon.32x32"/>
+                      <bt:Image size="80" resid="Icon.80x80"/>
+                    </Icon>
+                    <Action xsi:type="ShowTaskpane">
+                      <SourceLocation resid="Taskpane.Url"/>
+                    </Action>
+                  </Control>
+                </Group>
+                <Group id="settingsGroup">
+                  <Label resid="SettingsLabel"/>
+                  <Control xsi:type="Button" id="settingsButton">
+                    <Label resid="settingsButton.Label"/>
+                    <Supertip>
+                      <Title resid="settingsButton.Label"/>
+                      <Description resid="settingsButton.Tooltip"/>
+                    </Supertip>
+                    <Icon>
+                      <bt:Image size="16" resid="IconSettings.16x16"/>
+                      <bt:Image size="32" resid="IconSettings.32x32"/>
+                      <bt:Image size="80" resid="IconSettings.80x80"/>
+                    </Icon>
+                    <Action xsi:type="ShowTaskpane">
+                      <SourceLocation resid="settingsButton.Url"/>
+                    </Action>
+                  </Control>
+                </Group>
+            </OfficeTab>
+          </ExtensionPoint>
+        </DesktopFormFactor>
+      </Host>
+    </Hosts>
+    <Resources>
+      <bt:Images>
+        <bt:Image id="Icon.16x16" DefaultValue="https://closir-ms1.s3.amazonaws.com/682bf661f65fe5a1dca6faf944018be9aa9701fc29949a0a5e92cedee6d571c8b351b79f66ed9e13454aab42ff5cd535324d71cc44cc9525e407417a04585b8f.png"/>
+        <bt:Image id="Icon.32x32" DefaultValue="https://closir-ms1.s3.amazonaws.com/682bf661f65fe5a1dca6faf944018be9aa9701fc29949a0a5e92cedee6d571c8b351b79f66ed9e13454aab42ff5cd535324d71cc44cc9525e407417a04585b8f.png"/>
+        <bt:Image id="Icon.80x80" DefaultValue="https://closir-ms1.s3.amazonaws.com/682bf661f65fe5a1dca6faf944018be9aa9701fc29949a0a5e92cedee6d571c8b351b79f66ed9e13454aab42ff5cd535324d71cc44cc9525e407417a04585b8f.png"/>
+        <bt:Image id="IconSettings.16x16" DefaultValue="https://closir-ms1.s3.amazonaws.com/54384a905ef7ecc649929c66bbc0c80f1dae7bc4b347e784b935a7d26748ccae38c113e899c29b6a541ca37bcf09fb531be80904123a4d19746fd20798a5da7e.png"/>
+        <bt:Image id="IconSettings.32x32" DefaultValue="https://closir-ms1.s3.amazonaws.com/54384a905ef7ecc649929c66bbc0c80f1dae7bc4b347e784b935a7d26748ccae38c113e899c29b6a541ca37bcf09fb531be80904123a4d19746fd20798a5da7e.png"/>
+        <bt:Image id="IconSettings.80x80" DefaultValue="https://closir-ms1.s3.amazonaws.com/54384a905ef7ecc649929c66bbc0c80f1dae7bc4b347e784b935a7d26748ccae38c113e899c29b6a541ca37bcf09fb531be80904123a4d19746fd20798a5da7e.png"/>
+      </bt:Images>
+      <bt:Urls>
+        <bt:Url id="Taskpane.Url" DefaultValue="https://localhost:3000/taskpane.html"/>
+        <bt:Url id="settingsButton.Url" DefaultValue="https://localhost:3000/settings.html"/>
+      </bt:Urls>
+      <bt:ShortStrings>
+        <bt:String id="GroupLabel" DefaultValue="Closir Add-in"/>
+        <bt:String id="SettingsLabel" DefaultValue="Closir Add-in Settings"/>
+        <bt:String id="TaskpaneButton.Label" DefaultValue="Save meeting"/>
+        <bt:String id="settingsButton.Label" DefaultValue="Settings"/>
+      </bt:ShortStrings>
+      <bt:LongStrings>
+        <bt:String id="TaskpaneButton.Tooltip" DefaultValue="Opens a pane displaying all available properties."/>
+        <bt:String id="settingsButton.Tooltip" DefaultValue="Opens a pane displaying all available settings."/>
+      </bt:LongStrings>
+    </Resources>
+  </VersionOverrides>
+</OfficeApp>
