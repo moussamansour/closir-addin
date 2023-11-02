@@ -163,6 +163,46 @@
                 </Group>
             </OfficeTab>
           </ExtensionPoint>
+          <ExtensionPoint xsi:type="MessageReadCommandSurface">
+            <OfficeTab id="TabDefault4">
+                <Group id="msgReadGroup4">
+                  <Label resid="GroupLabel"/>
+                  <Control xsi:type="Button" id="showAddInButton4">
+                    <Label resid="TaskpaneButton.Label"/>
+                    <Supertip>
+                      <Title resid="TaskpaneButton.Label"/>
+                      <Description resid="TaskpaneButton.Tooltip"/>
+                    </Supertip>
+                    <Icon>
+                      <bt:Image size="16" resid="Icon.16x16"/>
+                      <bt:Image size="32" resid="Icon.32x32"/>
+                      <bt:Image size="80" resid="Icon.80x80"/>
+                    </Icon>
+                    <Action xsi:type="ShowTaskpane">
+                      <SourceLocation resid="Taskpane.Url"/>
+                    </Action>
+                  </Control>
+                </Group>
+                <Group id="settingsGroup4">
+                  <Label resid="SettingsLabel"/>
+                  <Control xsi:type="Button" id="settingsButton4">
+                    <Label resid="settingsButton.Label"/>
+                    <Supertip>
+                      <Title resid="settingsButton.Label"/>
+                      <Description resid="settingsButton.Tooltip"/>
+                    </Supertip>
+                    <Icon>
+                      <bt:Image size="16" resid="IconSettings.16x16"/>
+                      <bt:Image size="32" resid="IconSettings.32x32"/>
+                      <bt:Image size="80" resid="IconSettings.80x80"/>
+                    </Icon>
+                    <Action xsi:type="ShowTaskpane">
+                      <SourceLocation resid="settingsButton.Url"/>
+                    </Action>
+                  </Control>
+                </Group>
+            </OfficeTab>
+          </ExtensionPoint>
         </DesktopFormFactor>
       </Host>
     </Hosts>

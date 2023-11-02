@@ -16,6 +16,18 @@ let attachmentsIDs = [];
 Office.onReady((info) => {
   if (info.host === Office.HostType.Outlook) {
     let itemId = "";
+    if (Office.context.mailbox.item.itemType) {
+      document.getElementById("item-subject").innerHTML = "Please press the save button after filling your email info";
+      document.getElementById("item-error").innerHTML =
+        "Please fill the email details before saving the meeting on Closir";
+      var select = document.getElementById("meeting_types");
+      for (var i = 0; i < select.options.length; i++) {
+        if (select.options[i].value === "EMAIL") {
+          select.selectedIndex = i;
+          break;
+        }
+      }
+    }
     if (Office.context.mailbox.item.itemId) {
       itemId = Office.context.mailbox.item.itemId;
       getSavedData(itemId);
@@ -97,35 +109,76 @@ async function getMeetingData() {
       meeting_object["time_zone"] = mailboxItem.start ? getTimeZone(mailboxItem.start) : "";
       fillMeetingsData(meeting_object);
     } else {
-      const promises = [
-        promiseAsyncFunction((callback) => mailboxItem.body.getAsync("text", callback)).then((note) => {
-          meeting_object["meeting_notes"] = note;
-        }),
-        promiseAsyncFunction((callback) => mailboxItem.location.getAsync(callback)).then((location) => {
-          meeting_object["meeting_location"] = location;
-          meeting_object["address"] = location;
-        }),
-        promiseAsyncFunction((callback) => mailboxItem.subject.getAsync(callback)).then((subject) => {
-          meeting_object["meeting_name"] = subject;
-        }),
+      const promises = [];
+      if (mailboxItem.location) {
+        promises.push(
+          promiseAsyncFunction((callback) => mailboxItem.location.getAsync(callback)).then((location) => {
+            meeting_object["meeting_location"] = location;
+            meeting_object["address"] = location;
+          })
+        );
+      } else {
+        meeting_object["meeting_location"] = "Virtual";
+        meeting_object["address"] = "Virtual";
+      }
+      if (mailboxItem.body) {
+        promises.push(
+          promiseAsyncFunction((callback) => mailboxItem.body.getAsync("text", callback)).then((note) => {
+            meeting_object["meeting_notes"] = note;
+          })
+        );
+      }
+      if (mailboxItem.to) {
+        promiseAsyncFunction((callback) => mailboxItem.to.getAsync(callback)).then((requiredAttendees) => {
+          meeting_object["required_participants"] = requiredAttendees;
+        });
+      }
+      if (mailboxItem.cc) {
+        promiseAsyncFunction((callback) => mailboxItem.cc.getAsync(callback)).then((requiredAttendees) => {
+          meeting_object["optional_participants"] = requiredAttendees;
+        });
+      }
+      if (mailboxItem.requiredAttendees) {
         promiseAsyncFunction((callback) => mailboxItem.requiredAttendees.getAsync(callback)).then(
           (requiredAttendees) => {
             meeting_object["required_participants"] = requiredAttendees;
           }
-        ),
+        );
+      }
+      if (mailboxItem.optionalAttendees) {
         promiseAsyncFunction((callback) => mailboxItem.optionalAttendees.getAsync(callback)).then(
           (optionalAttendees) => {
             meeting_object["optional_participants"] = optionalAttendees;
           }
-        ),
-        promiseAsyncFunction((callback) => mailboxItem.end.getAsync(callback)).then((end) => {
-          meeting_object["end_of_meeting"] = formatDate(end);
-        }),
-        promiseAsyncFunction((callback) => mailboxItem.start.getAsync(callback)).then((start) => {
-          meeting_object["date_of_meeting"] = formatDate(start);
-          meeting_object["time_zone"] = getTimeZone(start);
-        }),
-      ];
+        );
+      }
+      if (mailboxItem.subject) {
+        promises.push(
+          promiseAsyncFunction((callback) => mailboxItem.subject.getAsync(callback)).then((subject) => {
+            meeting_object["meeting_name"] = subject;
+          })
+        );
+      }
+      if (mailboxItem.end) {
+        promises.push(
+          promiseAsyncFunction((callback) => mailboxItem.end.getAsync(callback)).then((end) => {
+            meeting_object["end_of_meeting"] = formatDate(end);
+          })
+        );
+      } else {
+        meeting_object["end_of_meeting"] = formatDate(new Date());
+      }
+      if (mailboxItem.start) {
+        promises.push(
+          promiseAsyncFunction((callback) => mailboxItem.start.getAsync(callback)).then((start) => {
+            meeting_object["date_of_meeting"] = formatDate(start);
+            meeting_object["time_zone"] = getTimeZone(start);
+          })
+        );
+      } else {
+        meeting_object["date_of_meeting"] = formatDate(new Date());
+        meeting_object["time_zone"] = getTimeZone(new Date());
+      }
 
       Promise.all(promises).then(() => {
         fillMeetingsData(meeting_object);
@@ -142,8 +195,12 @@ function fillMeetingsData(meeting_object) {
   let topics = document.getElementsByClassName("tagInput");
   let topics_weight = [];
   for (let i = 0; i < topics.length; i++) {
-    if (topics[i].innerHTML != "0" && topics[i].style.display != "none" ) {
-      topics_weight.push({ name: topics[i].id.replace("tag_", ""), weight: topics[i].innerHTML == "+" ? 1 : Number(topics[i].innerHTML), isSelected: true });
+    if (topics[i].innerHTML != "0" && topics[i].style.display != "none") {
+      topics_weight.push({
+        name: topics[i].id.replace("tag_", ""),
+        weight: topics[i].innerHTML == "+" ? 1 : Number(topics[i].innerHTML),
+        isSelected: true,
+      });
     }
   }
   if (topics_weight.length > 0) meeting_object["tags"] = JSON.parse(JSON.stringify(topics_weight));
@@ -171,6 +228,7 @@ function fillMeetingsData(meeting_object) {
     });
   }
   meeting_object["investor_recortds"] = participants.toString();
+  meeting_object["meeting_type"] = document.getElementById("meeting_types").value;
   getAttachments(meeting_object);
 }
 
@@ -345,7 +403,7 @@ function processTags(itemId) {
               minus.style.display = "none";
 
               for (let j = 0; j < tags_saved.length; j++) {
-                if (tags_saved[j]["name"] == result[i]){
+                if (tags_saved[j]["name"] == result[i]) {
                   counter = tags_saved[j].weight;
                   plus.innerHTML = counter;
                   container.style.background = "#bb252e";
