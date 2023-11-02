@@ -23,7 +23,7 @@
   <FormSettings>
     <Form xsi:type="ItemRead">
       <DesktopSettings>
-        <SourceLocation DefaultValue="https://localhost:3000/taskpane.html"/>
+        <SourceLocation DefaultValue="https://closir-addin.vercel.app/taskpane.html"/>
         <RequestedHeight>250</RequestedHeight>
       </DesktopSettings>
     </Form>
@@ -216,8 +216,8 @@
         <bt:Image id="IconSettings.80x80" DefaultValue="https://closir-ms1.s3.amazonaws.com/54384a905ef7ecc649929c66bbc0c80f1dae7bc4b347e784b935a7d26748ccae38c113e899c29b6a541ca37bcf09fb531be80904123a4d19746fd20798a5da7e.png"/>
       </bt:Images>
       <bt:Urls>
-        <bt:Url id="Taskpane.Url" DefaultValue="https://localhost:3000/taskpane.html"/>
-        <bt:Url id="settingsButton.Url" DefaultValue="https://localhost:3000/settings.html"/>
+        <bt:Url id="Taskpane.Url" DefaultValue="https://closir-addin.vercel.app/taskpane.html"/>
+        <bt:Url id="settingsButton.Url" DefaultValue="https://closir-addin.vercel.app/settings.html"/>
       </bt:Urls>
       <bt:ShortStrings>
         <bt:String id="GroupLabel" DefaultValue="Closir Add-in"/>
