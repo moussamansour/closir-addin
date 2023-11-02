@@ -1,0 +1,83 @@
+.token-setting{
+    display: flex;
+}
+
+.section_title{
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    margin-bottom: 5px !important;
+}
+
+.closir_button {
+    color: #ffffff;
+    background: #bb262e;
+    border: solid 1px #bb262e;
+    padding: 2px 15px;
+    border-radius: 5px;
+    text-align: center;
+    font-family: "Segoe UI", "Segoe UI Web (West European)", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    height: 30px;
+    cursor: pointer;
+ }
+
+ .closir_button:hover {
+    color: #ffffff;
+    background-color: #881d24;
+}
+
+.support-message, label{
+    font-family: "Segoe UI", "Segoe UI Web (West European)", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    color: #424242;
+}
+
+#success-message{
+    font-family: "Segoe UI", "Segoe UI Web (West European)", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    color: #424242;
+    margin-top: 10px;
+    text-align: center;
+    display: none;
+}
+
+#failed-message{
+    font-family: "Segoe UI", "Segoe UI Web (West European)", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    color: #424242;
+    margin-top: 10px;
+    text-align: center;
+    display: none;
+}
+
+.settings-container{
+    display: flex;
+    flex-direction: column;
+}
+
+h3{
+    font-family: "Segoe UI", "Segoe UI Web (West European)", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+    font-weight: 500;
+    font-size: 22px;
+    color: #424242;
+    text-align: center;
+}
+
+input#token {
+    width: 70%;
+    height: 25px;
+}
+
+.token-settings{
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+}
+
+.token-input{
+    margin-top: 10px;
+}
