@@ -23,7 +23,7 @@
   <FormSettings>
     <Form xsi:type="ItemRead">
       <DesktopSettings>
-        <SourceLocation DefaultValue="https://main--amazing-trifle-0508b5.netlify.app/taskpane.html"/>
+        <SourceLocation DefaultValue="https://closir-addin.vercel.app/taskpane.html"/>
         <RequestedHeight>250</RequestedHeight>
       </DesktopSettings>
     </Form>
@@ -163,6 +163,46 @@
                 </Group>
             </OfficeTab>
           </ExtensionPoint>
+          <ExtensionPoint xsi:type="MessageReadCommandSurface">
+            <OfficeTab id="TabDefault4">
+                <Group id="msgReadGroup4">
+                  <Label resid="GroupLabel"/>
+                  <Control xsi:type="Button" id="showAddInButton4">
+                    <Label resid="TaskpaneButton.Label"/>
+                    <Supertip>
+                      <Title resid="TaskpaneButton.Label"/>
+                      <Description resid="TaskpaneButton.Tooltip"/>
+                    </Supertip>
+                    <Icon>
+                      <bt:Image size="16" resid="Icon.16x16"/>
+                      <bt:Image size="32" resid="Icon.32x32"/>
+                      <bt:Image size="80" resid="Icon.80x80"/>
+                    </Icon>
+                    <Action xsi:type="ShowTaskpane">
+                      <SourceLocation resid="Taskpane.Url"/>
+                    </Action>
+                  </Control>
+                </Group>
+                <Group id="settingsGroup4">
+                  <Label resid="SettingsLabel"/>
+                  <Control xsi:type="Button" id="settingsButton4">
+                    <Label resid="settingsButton.Label"/>
+                    <Supertip>
+                      <Title resid="settingsButton.Label"/>
+                      <Description resid="settingsButton.Tooltip"/>
+                    </Supertip>
+                    <Icon>
+                      <bt:Image size="16" resid="IconSettings.16x16"/>
+                      <bt:Image size="32" resid="IconSettings.32x32"/>
+                      <bt:Image size="80" resid="IconSettings.80x80"/>
+                    </Icon>
+                    <Action xsi:type="ShowTaskpane">
+                      <SourceLocation resid="settingsButton.Url"/>
+                    </Action>
+                  </Control>
+                </Group>
+            </OfficeTab>
+          </ExtensionPoint>
         </DesktopFormFactor>
       </Host>
     </Hosts>
@@ -176,8 +216,8 @@
         <bt:Image id="IconSettings.80x80" DefaultValue="https://closir-ms1.s3.amazonaws.com/54384a905ef7ecc649929c66bbc0c80f1dae7bc4b347e784b935a7d26748ccae38c113e899c29b6a541ca37bcf09fb531be80904123a4d19746fd20798a5da7e.png"/>
       </bt:Images>
       <bt:Urls>
-        <bt:Url id="Taskpane.Url" DefaultValue="https://main--amazing-trifle-0508b5.netlify.app/taskpane.html"/>
-        <bt:Url id="settingsButton.Url" DefaultValue="https://main--amazing-trifle-0508b5.netlify.app/settings.html"/>
+        <bt:Url id="Taskpane.Url" DefaultValue="https://closir-addin.vercel.app/taskpane.html"/>
+        <bt:Url id="settingsButton.Url" DefaultValue="https://closir-addin.vercel.app/settings.html"/>
       </bt:Urls>
       <bt:ShortStrings>
         <bt:String id="GroupLabel" DefaultValue="Closir Add-in"/>

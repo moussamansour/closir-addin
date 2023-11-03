@@ -5,7 +5,7 @@ const CopyWebpackPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 const urlDev = "https://localhost:3000";
-const urlProd = "https://closir-addin.vercel.app/"; // CHANGE THIS TO YOUR PRODUCTION DEPLOYMENT LOCATION
+const urlProd = "https://closir-addin.vercel.app"; // CHANGE THIS TO YOUR PRODUCTION DEPLOYMENT LOCATION
 const path = require('path');
 
 async function getHttpsOptions() {

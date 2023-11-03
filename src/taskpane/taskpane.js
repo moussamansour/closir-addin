@@ -16,7 +16,7 @@ let attachmentsIDs = [];
 Office.onReady((info) => {
   if (info.host === Office.HostType.Outlook) {
     let itemId = "";
-    if (Office.context.mailbox.item.itemType) {
+    if (Office.context.mailbox.item.itemType == "message") {
       document.getElementById("item-subject").innerHTML = "Please press the save button after filling your email info";
       document.getElementById("item-error").innerHTML =
         "Please fill the email details before saving the meeting on Closir";
