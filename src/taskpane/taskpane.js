@@ -13,6 +13,13 @@ AWS.config.update({
 });
 
 let attachmentsIDs = [];
+let tags_saved = [];
+let update = false;
+let user_id = 0;
+let company_id = 0;
+let meeting_id = 0;
+let company_id_string = '';
+
 Office.onReady((info) => {
   if (info.host === Office.HostType.Outlook) {
     let itemId = "";
@@ -20,8 +27,8 @@ Office.onReady((info) => {
       document.getElementById("item-subject").innerHTML = "Please press the save button after filling your email info";
       document.getElementById("item-error").innerHTML =
         "Please fill the email details before saving the meeting on Closir";
-      var select = document.getElementById("meeting_types");
-      for (var i = 0; i < select.options.length; i++) {
+      let select = document.getElementById("meeting_types");
+      for (let i = 0; i < select.options.length; i++) {
         if (select.options[i].value === "EMAIL") {
           select.selectedIndex = i;
           break;
@@ -37,49 +44,62 @@ Office.onReady((info) => {
         getSavedData(itemId);
       });
     }
-
-    if (!Office.context.roamingSettings.get("closir_token39")) {
-      document.getElementById("access_gained").style.display = "none";
-      document.getElementById("item-subject").innerHTML =
-        "Please add your Closir token in settings to be able to save your meetings onto Closir";
-    } else {
-      getTags();
-      document.getElementById("approve_adding_meeting").onclick = getMeetingData;
-      document.getElementById("host").onclick = showHost;
-      document.getElementById("direct").onclick = hideHost;
-    }
   }
 });
 
 function getSavedData(itemId) {
-  if (Office.context.roamingSettings.get("meeting" + itemId)) {
-    document.getElementById("approve_adding_meeting_text").innerText = "Update on Closir";
-    document.getElementById("approve_adding_meeting").style.display = "none";
-    document.getElementById("item-subject").style.display = "none";
-    document.getElementById("meeting_saved").style.display = "block";
-    let inputs = document.getElementsByTagName("INPUT");
-    for (let j = 0; j < inputs.length; j++) {
-      inputs[j].disabled = true;
-    }
-    document.getElementById("meeting_types").disabled = true;
-  }
-  if (Office.context.roamingSettings.get("meeting_type" + itemId)) {
-    document.getElementById("meeting_types").value = Office.context.roamingSettings.get("meeting_type" + itemId);
-  }
-  if (Office.context.roamingSettings.get("host" + itemId)) {
-    if (Office.context.roamingSettings.get("host" + itemId) == "host") {
-      document.getElementById("host").checked = true;
-      document.getElementById("host_name").style.display = "block";
-      if (Office.context.roamingSettings.get("host_name" + itemId)) {
-        document.getElementById("host_name").value = Office.context.roamingSettings.get("host_name" + itemId);
-      }
-    } else {
-      document.getElementById("direct").checked = true;
-    }
-  } else {
-    document.getElementById("direct").checked = true;
+  try {
+    const url = new URL(
+      `https://www.closir.com/api/public/investor-interest/company-meeting?token=123456&requesterEmail=moussa.mansour99@outlook.com&outlook_id=` +
+        itemId
+    );
+    fetch(url, {
+      method: "GET",
+    }).then((res) => {
+      res.json().then((data) => {
+        if (data) {
+          update = true;
+          document.getElementById("approve_adding_meeting_text").innerText = "Update on Closir";
+          document.getElementById("item-subject").style.display = "none";
+          document.getElementById("meeting_saved").style.display = "block";
+          document.getElementById("meeting_types").value = data["meeting_type"];
+          user_id = data['user_id'];
+          company_id = data['company_id'];
+          company_id_string = data['company_id_string'];
+          meeting_id = data['id'];
+          if (data["host"] == "host") {
+            document.getElementById("host").checked = true;
+            if (data["host_name"]) {
+              document.getElementById("host_name").style.display = "block";
+              document.getElementById("host_name").value = data["host_name"];
+            }
+          } else {
+            document.getElementById("direct").checked = true;
+          }
+          if (data["tags"]) tags_saved = JSON.parse(data["tags"]);
+        }
+        init();
+      });
+    });
+  } catch (e) {
+    init();
+    console.log(e);
   }
 }
+
+async function init() {
+  if (!Office.context.roamingSettings.get("closir_token39")) {
+    document.getElementById("access_gained").style.display = "none";
+    document.getElementById("item-subject").innerHTML =
+      "Please add your Closir token in settings to be able to save your meetings onto Closir";
+  } else {
+    processTags();
+    document.getElementById("approve_adding_meeting").onclick = getMeetingData;
+    document.getElementById("host").onclick = showHost;
+    document.getElementById("direct").onclick = hideHost;
+  }
+}
+
 async function showHost(value) {
   document.getElementById("host_name").style.display = "block";
 }
@@ -92,100 +112,92 @@ async function getMeetingData() {
   document.getElementById("loader").style.display = "block";
   let meeting_object = {};
   let mailboxItem = Office.context.mailbox.item;
-  if (Office.MailboxEnums.ItemType.Appointment) {
-    meeting_object["required_participants"] = [];
-    meeting_object["optional_participants"] = [];
-    if (mailboxItem.itemId) {
-      meeting_object["meeting_name"] = mailboxItem.subject ? mailboxItem.subject : "";
-      mailboxItem.body.getAsync("text", function (text) {
-        meeting_object["meeting_notes"] = text.value ? text.value : "";
-      });
-      meeting_object["meeting_location"] = mailboxItem.location ? mailboxItem.location : "";
-      meeting_object["address"] = mailboxItem.location ? mailboxItem.location : "";
-      meeting_object["required_participants"] = mailboxItem.requiredAttendees ? mailboxItem.requiredAttendees : [];
-      meeting_object["optional_participants"] = mailboxItem.optionalAttendees ? mailboxItem.optionalAttendees : [];
-      meeting_object["end_of_meeting"] = mailboxItem.end ? formatDate(mailboxItem.end) : "";
-      meeting_object["date_of_meeting"] = mailboxItem.start ? formatDate(mailboxItem.start) : "";
-      meeting_object["time_zone"] = mailboxItem.start ? getTimeZone(mailboxItem.start) : "";
-      fillMeetingsData(meeting_object);
+  meeting_object["required_participants"] = [];
+  meeting_object["optional_participants"] = [];
+  if (mailboxItem.itemId) {
+    meeting_object["meeting_name"] = mailboxItem.subject ? mailboxItem.subject : "";
+    mailboxItem.body.getAsync("text", function (text) {
+      meeting_object["meeting_notes"] = text.value ? text.value : "";
+    });
+    meeting_object["meeting_location"] = mailboxItem.location ? mailboxItem.location : "";
+    meeting_object["address"] = mailboxItem.location ? mailboxItem.location : "";
+    meeting_object["required_participants"] = mailboxItem.requiredAttendees ? mailboxItem.requiredAttendees : [];
+    meeting_object["optional_participants"] = mailboxItem.optionalAttendees ? mailboxItem.optionalAttendees : [];
+    meeting_object["end_of_meeting"] = mailboxItem.end ? formatDate(mailboxItem.end) : "";
+    meeting_object["date_of_meeting"] = mailboxItem.start ? formatDate(mailboxItem.start) : "";
+    meeting_object["time_zone"] = mailboxItem.start ? getTimeZone(mailboxItem.start) : "";
+    fillMeetingsData(meeting_object);
+  } else {
+    const promises = [];
+    if (mailboxItem.location) {
+      promises.push(
+        promiseAsyncFunction((callback) => mailboxItem.location.getAsync(callback)).then((location) => {
+          meeting_object["meeting_location"] = location;
+          meeting_object["address"] = location;
+        })
+      );
     } else {
-      const promises = [];
-      if (mailboxItem.location) {
-        promises.push(
-          promiseAsyncFunction((callback) => mailboxItem.location.getAsync(callback)).then((location) => {
-            meeting_object["meeting_location"] = location;
-            meeting_object["address"] = location;
-          })
-        );
-      } else {
-        meeting_object["meeting_location"] = "Virtual";
-        meeting_object["address"] = "Virtual";
-      }
-      if (mailboxItem.body) {
-        promises.push(
-          promiseAsyncFunction((callback) => mailboxItem.body.getAsync("text", callback)).then((note) => {
-            meeting_object["meeting_notes"] = note;
-          })
-        );
-      }
-      if (mailboxItem.to) {
-        promiseAsyncFunction((callback) => mailboxItem.to.getAsync(callback)).then((requiredAttendees) => {
-          meeting_object["required_participants"] = requiredAttendees;
-        });
-      }
-      if (mailboxItem.cc) {
-        promiseAsyncFunction((callback) => mailboxItem.cc.getAsync(callback)).then((requiredAttendees) => {
-          meeting_object["optional_participants"] = requiredAttendees;
-        });
-      }
-      if (mailboxItem.requiredAttendees) {
-        promiseAsyncFunction((callback) => mailboxItem.requiredAttendees.getAsync(callback)).then(
-          (requiredAttendees) => {
-            meeting_object["required_participants"] = requiredAttendees;
-          }
-        );
-      }
-      if (mailboxItem.optionalAttendees) {
-        promiseAsyncFunction((callback) => mailboxItem.optionalAttendees.getAsync(callback)).then(
-          (optionalAttendees) => {
-            meeting_object["optional_participants"] = optionalAttendees;
-          }
-        );
-      }
-      if (mailboxItem.subject) {
-        promises.push(
-          promiseAsyncFunction((callback) => mailboxItem.subject.getAsync(callback)).then((subject) => {
-            meeting_object["meeting_name"] = subject;
-          })
-        );
-      }
-      if (mailboxItem.end) {
-        promises.push(
-          promiseAsyncFunction((callback) => mailboxItem.end.getAsync(callback)).then((end) => {
-            meeting_object["end_of_meeting"] = formatDate(end);
-          })
-        );
-      } else {
-        meeting_object["end_of_meeting"] = formatDate(new Date());
-      }
-      if (mailboxItem.start) {
-        promises.push(
-          promiseAsyncFunction((callback) => mailboxItem.start.getAsync(callback)).then((start) => {
-            meeting_object["date_of_meeting"] = formatDate(start);
-            meeting_object["time_zone"] = getTimeZone(start);
-          })
-        );
-      } else {
-        meeting_object["date_of_meeting"] = formatDate(new Date());
-        meeting_object["time_zone"] = getTimeZone(new Date());
-      }
-
-      Promise.all(promises).then(() => {
-        fillMeetingsData(meeting_object);
+      meeting_object["meeting_location"] = "Virtual";
+      meeting_object["address"] = "Virtual";
+    }
+    if (mailboxItem.body) {
+      promises.push(
+        promiseAsyncFunction((callback) => mailboxItem.body.getAsync("text", callback)).then((note) => {
+          meeting_object["meeting_notes"] = note;
+        })
+      );
+    }
+    if (mailboxItem.to) {
+      promiseAsyncFunction((callback) => mailboxItem.to.getAsync(callback)).then((requiredAttendees) => {
+        meeting_object["required_participants"] = requiredAttendees;
       });
     }
-  } else {
-    console.log("This feature is only available in an appointment context.");
+    if (mailboxItem.cc) {
+      promiseAsyncFunction((callback) => mailboxItem.cc.getAsync(callback)).then((requiredAttendees) => {
+        meeting_object["optional_participants"] = requiredAttendees;
+      });
+    }
+    if (mailboxItem.requiredAttendees) {
+      promiseAsyncFunction((callback) => mailboxItem.requiredAttendees.getAsync(callback)).then((requiredAttendees) => {
+        meeting_object["required_participants"] = requiredAttendees;
+      });
+    }
+    if (mailboxItem.optionalAttendees) {
+      promiseAsyncFunction((callback) => mailboxItem.optionalAttendees.getAsync(callback)).then((optionalAttendees) => {
+        meeting_object["optional_participants"] = optionalAttendees;
+      });
+    }
+    if (mailboxItem.subject) {
+      promises.push(
+        promiseAsyncFunction((callback) => mailboxItem.subject.getAsync(callback)).then((subject) => {
+          meeting_object["meeting_name"] = subject;
+        })
+      );
+    }
+    if (mailboxItem.end) {
+      promises.push(
+        promiseAsyncFunction((callback) => mailboxItem.end.getAsync(callback)).then((end) => {
+          meeting_object["end_of_meeting"] = formatDate(end);
+        })
+      );
+    } else {
+      meeting_object["end_of_meeting"] = formatDate(new Date());
+    }
+    if (mailboxItem.start) {
+      promises.push(
+        promiseAsyncFunction((callback) => mailboxItem.start.getAsync(callback)).then((start) => {
+          meeting_object["date_of_meeting"] = formatDate(start);
+          meeting_object["time_zone"] = getTimeZone(start);
+        })
+      );
+    } else {
+      meeting_object["date_of_meeting"] = formatDate(new Date());
+      meeting_object["time_zone"] = getTimeZone(new Date());
+    }
+
+    Promise.all(promises).then(() => {
+      fillMeetingsData(meeting_object);
+    });
   }
 }
 
@@ -203,9 +215,8 @@ function fillMeetingsData(meeting_object) {
       });
     }
   }
-  if (topics_weight.length > 0) meeting_object["tags"] = JSON.parse(JSON.stringify(topics_weight));
-  console.log(meeting_object);
   meeting_object["host"] = document.getElementById("host").checked ? "host" : "direct";
+  if (topics_weight.length > 0) meeting_object["tags"] = JSON.parse(JSON.stringify(topics_weight));
   if (document.getElementById("host").checked) meeting_object["host_name"] = document.getElementById("host_name").value;
   for (let i = 0; i < meeting_object["required_participants"].length; i++) {
     const attendee = meeting_object["required_participants"][i]["emailAddress"];
@@ -218,18 +229,31 @@ function fillMeetingsData(meeting_object) {
   meeting_object["meeting_format"] = participants.length > 1 ? "Group" : "1-1";
   delete meeting_object["required_participants"];
   delete meeting_object["optional_participants"];
+
+  if(meeting_id != 0){
+    meeting_object['user_id'] = user_id;
+    meeting_object['company_id'] = company_id;
+    meeting_object['company_id_string'] = company_id_string;
+    meeting_object['id'] = meeting_id;
+    meeting_object['meeting_id'] = meeting_id;
+  }
+
   let itemId = Office.context.mailbox.item.itemId;
   if (itemId == null || itemId == undefined) {
     Office.context.mailbox.item.saveAsync(function (result) {
       itemId = result.value;
-      if (Office.context.roamingSettings.get("id" + itemId)) {
-        //meeting_object["id"] = Office.context.roamingSettings.get("id" + itemId);
-      }
+      meeting_object["investor_recortds"] = participants.toString();
+      meeting_object["meeting_type"] = document.getElementById("meeting_types").value;
+      meeting_object["outlook_id"] = itemId;
+      getAttachments(meeting_object);
     });
+  } else {
+    meeting_object["investor_recortds"] = participants.toString();
+    meeting_object["meeting_type"] = document.getElementById("meeting_types").value;
+    meeting_object["outlook_id"] = itemId;
+    getAttachments(meeting_object);
   }
-  meeting_object["investor_recortds"] = participants.toString();
-  meeting_object["meeting_type"] = document.getElementById("meeting_types").value;
-  getAttachments(meeting_object);
+
 }
 
 function promiseAsyncFunction(asyncFunction) {
@@ -248,19 +272,15 @@ function getAttachments(meeting_object) {
   const item = Office.context.mailbox.item;
   attachmentsIDs = [];
   if (item.attachments) {
-    console.log(item.attachments);
     let counterFiles = item.attachments.length;
     if (counterFiles > 0) {
       for (let k = 0; k < item.attachments.length; k++) {
         let attachment = item.attachments[k];
         if (attachment.name == "open.url") {
-          console.log("url attachment");
           counterFiles--;
         } else {
           try {
             item.getAttachmentContentAsync(attachment.id, (contentResult) => {
-              console.log(attachment);
-              console.log(contentResult);
               uploadFile(meeting_object, attachment, contentResult, counterFiles);
             });
           } catch (e) {
@@ -352,23 +372,7 @@ function getAttachments(meeting_object) {
   }
 }
 
-function getTags() {
-  if (Office.context.mailbox.item.itemId) {
-    let itemId = Office.context.mailbox.item.itemId;
-    processTags(itemId);
-  } else {
-    Office.context.mailbox.item.saveAsync(function (result) {
-      let itemId = result.value;
-      processTags(itemId);
-    });
-  }
-}
-
-function processTags(itemId) {
-  let tags_saved = [];
-  if (Office.context.roamingSettings.get("tags" + itemId)) {
-    tags_saved = JSON.parse(Office.context.roamingSettings.get("tags" + itemId));
-  }
+function processTags() {
   try {
     const response = fetch(
       "https://www.closir.com/api/public/investor-interest/company-meeting?ot=true&token=123456&requesterEmail=moussa.mansour99@outlook.com",
@@ -417,7 +421,6 @@ function processTags(itemId) {
               container.append(minus);
               container.append(tagName);
               container.append(plus);
-              //container.append(tagInput);
               tagName.addEventListener("click", function (e) {
                 if (counter == 0) {
                   counter++;
@@ -455,12 +458,6 @@ function processTags(itemId) {
                 }
               });
               document.getElementById("topics").append(container);
-              if (Office.context.roamingSettings.get("meeting" + itemId)) {
-                let inputs = document.getElementsByTagName("INPUT");
-                for (let j = 0; j < inputs.length; j++) {
-                  inputs[j].disabled = true;
-                }
-              }
             }
           }
         } else {
@@ -565,8 +562,6 @@ function uploadFile(meeting_object, attachment, contentResult, counterFiles) {
 }
 
 function saveMeeting(meeting_object) {
-  let update = false;
-
   let itemId = Office.context.mailbox.item.itemId;
   if (itemId == null || itemId == undefined) {
     Office.context.mailbox.item.saveAsync(function (result) {
@@ -579,54 +574,26 @@ function saveMeeting(meeting_object) {
 }
 
 function saveMeetingCall(itemId, meeting_object) {
-  let update = false;
   try {
     const url = new URL(
       `https://www.closir.com/api/public/investor-interest/company-meeting?token=123456&requesterEmail=moussa.mansour99@outlook.com`
     );
-    if (Office.context.roamingSettings.get("id" + itemId)) {
-      update = true;
-    }
     fetch(url, {
-      //method: update ? "PATCH" : "POST",
-      method: "POST",
+      method: update ? "PATCH" : "POST",
+      // method: "POST",
       body: meeting_object,
     }).then((res) => {
       res.json().then((data) => {
         if (data) {
-          Office.context.roamingSettings.set("meeting" + itemId, itemId);
-          Office.context.roamingSettings.set("meeting_type" + itemId, data["meeting_type"]);
-          Office.context.roamingSettings.set("host" + itemId, data["host"]);
-          Office.context.roamingSettings.set("tags" + itemId, data["tags"]);
-          Office.context.roamingSettings.set("id" + itemId, data["id"]);
-          if (data["host_name"]) Office.context.roamingSettings.set("host_name" + itemId, data["host_name"]);
-
-          Office.context.roamingSettings.saveAsync(function (result) {
-            if (result.status == Office.AsyncResultStatus.Succeeded) {
-              document.getElementById("approve_adding_meeting_text").innerText = "Update meeting on Closir";
-              document.getElementById("approve_adding_meeting").style.display = "none";
-              document.getElementById("item-subject").style.display = "none";
-              document.getElementById("meeting_saved").style.display = "block";
-              document.getElementById("meeting_saved_message").style.display = "block";
-              setTimeout(() => {
-                document.getElementById("meeting_saved_message").style.display = "none";
-                document.getElementById("loader").style.display = "none";
-                let inputs = document.getElementsByTagName("INPUT");
-                for (let j = 0; j < inputs.length; j++) {
-                  inputs[j].disabled = true;
-                }
-                document.getElementById("meeting_types").disabled = true;
-              }, 5000);
-              console.log("Token saved successfully!");
-            } else {
-              document.getElementById("loader").style.display = "none";
-              document.getElementById("meeting_failed_message").style.display = "block";
-              setTimeout(() => {
-                document.getElementById("meeting_failed_message").style.display = "none";
-              }, 6000);
-              console.log("Error saving token: " + result.error.message);
-            }
-          });
+          document.getElementById("approve_adding_meeting_text").innerText = "Update meeting on Closir";
+          document.getElementById("item-subject").style.display = "none";
+          document.getElementById("meeting_saved").style.display = "block";
+          document.getElementById("meeting_saved_message").style.display = "block";
+          setTimeout(() => {
+            document.getElementById("meeting_saved_message").style.display = "none";
+            document.getElementById("loader").style.display = "none";
+          }, 5000);
+          console.log("Meeting saved successfully!");
         } else {
           document.getElementById("loader").style.display = "none";
           document.getElementById("meeting_failed_message").style.display = "block";
